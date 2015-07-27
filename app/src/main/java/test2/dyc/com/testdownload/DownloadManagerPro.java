@@ -29,7 +29,6 @@ public class DownloadManagerPro {
 		apkUrl = url;
 		startDownload();
 	}
-
 	@SuppressLint("NewApi")
 	private void startDownload() {
 		downloadId = PreferencesUtils.getLong(mContext, DOWNLOAD_KEY, DEFAULT_DOWNLOAD_ID);
@@ -44,13 +43,11 @@ public class DownloadManagerPro {
 		    // 提示一直显示,下载完成后点击则消失
 		    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 		    request.setVisibleInDownloadsUi(false);
-		    
 		    // 加入下载队列
 		    downloadId = mDownloadManager.enqueue(request);
 		    PreferencesUtils.putLong(mContext, DOWNLOAD_KEY, downloadId);
 		}
 	}
-
 	/**
 	 * 查看下载状态
 	 * @param downloadId
@@ -87,8 +84,7 @@ public class DownloadManagerPro {
 				// if download successful, install apk
 				if (getStatusById(downloadId) == DownloadManager.STATUS_SUCCESSFUL) {
 					PreferencesUtils.putLong(mContext, DOWNLOAD_KEY, DEFAULT_DOWNLOAD_ID);
-					String apkFilePath = new StringBuilder(Environment
-							.getExternalStorageDirectory().getAbsolutePath())
+					String apkFilePath = new StringBuilder(Environment.getExternalStorageDirectory().getAbsolutePath())
 							.append(File.separator)
 							.append("")
 							.append(File.separator).append(mContext.getApplicationInfo().loadLabel(mContext.getPackageManager()))

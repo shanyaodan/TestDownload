@@ -8,13 +8,13 @@ interface Idownload {
      * Demonstrates some basic types that you can use as parameters
      * and return values in AIDL.
      */
-     void start(out DownloadItem item) ;
+     void start(in DownloadItem item) ;
 
 
-     void pause(out DownloadItem item) ;
+     void pause(in DownloadItem item) ;
 
 
-     void stop(out DownloadItem item) ;
+     void stop(in DownloadItem item) ;
 
 
      void resume() ;

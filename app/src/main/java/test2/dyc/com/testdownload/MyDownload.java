@@ -33,7 +33,6 @@ public class MyDownload {
 
     }
 
-
     MyDownload(Context context, String url) {
         this.context = context;
         dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -46,7 +45,6 @@ public class MyDownload {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         String apkName = "mytest";
         request.setDestinationInExternalPublicDir("mytest", Constants.UPDATE_FILE_NAME);
-        System.out.println("apk addddddd path");
         request.setTitle(apkName);
         request.setDescription("正在下载...");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
