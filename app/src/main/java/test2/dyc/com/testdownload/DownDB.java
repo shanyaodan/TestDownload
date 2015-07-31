@@ -23,7 +23,7 @@ public class DownDB extends SQLiteOpenHelper {
         if(null != mDownloadDB) {
             return mDownloadDB;
         }
-        mDownloadDB = new DownDB(context,"download_info.db",null ,1);
+        mDownloadDB = new DownDB(context,"download_info.db",null ,3);
         return mDownloadDB;
 
     }
@@ -31,21 +31,21 @@ public class DownDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table if not exists download_info("
-                + "id integer primary key,"
+                + "id INTEGER primary key,"
                 + "name varchar,"
                 + "url varchar,"
-                + "totalSize varchar"
-                +"state integer)"
+                + "totalSize varchar,"
+                +"downstate varchar" +
+                        ")"
                 );
-
     }
 
     public void InsetData(String name,String url,String totalSize,int state) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name",name);
+        contentValues.put("downstate",state);
         contentValues.put("totalSize",totalSize);
-        contentValues.put("state",state);
         contentValues.put("url",url);
+        contentValues.put("name",name);
         getWritableDatabase().insert("download_info", null, contentValues);
         closeDB();
     }
@@ -64,15 +64,15 @@ public class DownDB extends SQLiteOpenHelper {
             downloadItem.url =   cursor.getString(cursor.getColumnIndex("url"));
             downloadItem.name =   cursor.getString(cursor.getColumnIndex("name"));
             downloadItem.totalSize = cursor.getString(cursor.getColumnIndex("totalSize"));
-            downloadItem.state = cursor.getInt(cursor.getColumnIndex("state"));
+            downloadItem.state = cursor.getInt(cursor.getColumnIndex("downstate"));
             items.add(downloadItem);
          }
             return items;
     }
 
     public DownloadItem selectItem(String url) {
-        String sql = "select * from download_info where url="+url;
-        Cursor cursor = getWritableDatabase().rawQuery(sql, null);
+        String sql = "select * from download_info where url=?";
+        Cursor cursor = getWritableDatabase().rawQuery(sql, new String[]{url});
         if(null == cursor) {
             return null;
         }
@@ -83,15 +83,15 @@ public class DownDB extends SQLiteOpenHelper {
             downloadItem.name =  cursor.getString(cursor.getColumnIndex("name"));
             downloadItem.url =   cursor.getString(cursor.getColumnIndex("url"));
             downloadItem.totalSize = cursor.getString(cursor.getColumnIndex("totalSize"));
-            downloadItem.state = cursor.getInt(cursor.getColumnIndex("state"));
+            downloadItem.state = cursor.getInt(cursor.getColumnIndex("downstate"));
         }
         closeDB();
         return downloadItem;
     }
 
     public void delItem(String url){
-        String sql = "delete * from download_info where url="+url;
-        Cursor cursor = getWritableDatabase().rawQuery(sql, null);
+        String sql = "delete * from download_info where url=?";
+        Cursor cursor = getWritableDatabase().rawQuery(sql, new String[]{url});
         closeDB();
     }
 

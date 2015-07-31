@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -15,6 +16,36 @@ import java.util.HashMap;
  */
 public class DownLoadManager {
     private Idownload mDownLoader;
+    public static final String ACTION_DOWNLOAD = "com.dyc.testdownload";
+    /**
+     * broadcast
+     * 下载标识符 start 0
+     */
+    public static final int    DOWNLOAD_START = 0;
+
+    /**
+     * broadcast
+     * 下载标识符 UPDATE_STATE 1
+     */
+    public static final int    DOWNLOAD_UPDATE_STATE = 1;
+
+    /**
+     *
+     * broadcast
+     *载标识符 PAUSE 2
+     *
+     */
+    public static final int    DOWNLOAD_PAUSE = 2;
+
+    /**
+     * broadcast
+     *载标识符 FINISH 3
+     *
+     */
+    public static final int    DOWNLOAD_FINISH = 3;
+
+
+
     public DownLoadManager() {
 
     }
@@ -42,7 +73,7 @@ public class DownLoadManager {
 
     public void pause(String url) {
         try {
-            mDownLoader.pause(getDownloadItem(url,""));
+            mDownLoader.pause(getDownloadItem(url, ""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -50,7 +81,7 @@ public class DownLoadManager {
 
     public void stop(String url) {
         try {
-            mDownLoader.stop(getDownloadItem(url,""));
+            mDownLoader.stop(getDownloadItem(url, ""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -60,14 +91,17 @@ public class DownLoadManager {
 
     }
 
+
+
     public void stopAll() {
 
     }
 
     public void removeData(String url) {
-        getDownloadItem(url,"");
+        stop(url);
+        DownloadItem downloadItem =  getDownloadItem(url,"");
 
-
+        FileUitls.getFile(url,App.getContext()).delete();
     }
 
 
@@ -84,8 +118,18 @@ public class DownLoadManager {
         }
         downloadItem   =    DownDB.getInstance(App.getContext()).selectItem(url);
         return downloadItem;
-
     }
+
+    public static void sendDownloadBroadCast(String url,int sign) {
+            Intent intent = new Intent(ACTION_DOWNLOAD);
+            Bundle bundle = new Bundle();
+            bundle.putString("successUrl",url);
+            bundle.putInt("downSign", sign);
+            App.getContext().sendBroadcast(intent);
+    }
+
+
+
 
 
 

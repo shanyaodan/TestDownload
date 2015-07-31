@@ -17,6 +17,7 @@ interface Idownload {
      void stop(in DownloadItem item) ;
 
 
+
      void resume() ;
 
 

@@ -20,58 +20,68 @@ import java.io.Serializable;
 public class FileUitls {
 
 
-    public static void saveData(String url,Serializable data,Context context) {
-        try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(getFile(url,context)));
-            objectOutputStream.writeObject(data);
-        } catch (IOException e) {
-            
-            e.printStackTrace();
-        }
+//    public static void saveData(String url,Serializable data,Context context) {
+//        try {
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(getFile(url,context)));
+//            objectOutputStream.writeObject(data);
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+
+//    public static  Object getData(String url,Context context){
+//
+//        if(!checkFileExit(url,context)) {
+//            return null;
+//        }
+//        File file = new File(getSavePath(context)+"/"+url.hashCode());
+//        try {
+//                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
+//                    return    objectInputStream.readObject();
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            catch (IOException e) {
+//                e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    public static  String getTempSavePath(Context context) {
+       return context.getExternalFilesDir(null).getAbsolutePath()+"/temp";
+
     }
-
-
-
-
-    public static  Object getData(String url,Context context){
-
-        if(!checkFileExit(url,context)) {
-            return null;
-        }
-        File file = new File(getSavePath(context)+"/"+url.hashCode());
-        try {
-                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
-                    return    objectInputStream.readObject();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            catch (IOException e) {
-                e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static  String getSavePath(Context context) {
-       return context.getExternalFilesDir(null).getAbsolutePath();
+    public static  String getCompleteSavePath(Context context) {
+        return context.getExternalFilesDir(null).getAbsolutePath()+"/data";
 
     }
 
     public static boolean checkFileExit(String url,Context context){
-
         if(getFile(url,context).exists()) {
             return true;
         }
     return false;
     }
 
-    public static void resetFileData(String url,Context context ) {
-      saveData(url,null,context);
-    }
 
 
     public static File getFile(String url,Context context) {
 
-     return    new File(getSavePath(context)+"/"+url.hashCode());
+     return    new File(getTempSavePath(context)+"/"+url.hashCode());
+
+    }
+
+    public static void delFile(String url,Context context){
+        new File(getTempSavePath(context)+"/"+url.hashCode()).delete();
+    }
+
+    public static void moveFile(String url,String fileName,Context context) {
+
+        new File(getTempSavePath(context)+"/"+url.hashCode()).renameTo(new File(getCompleteSavePath(context) + "/" + fileName));
 
     }
 

@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,11 +35,9 @@ public class DownloadService extends Service {
     }
 
   private  class MyBinder extends  Idownload.Stub{
-
         @Override
         public void start(final DownloadItem item) throws RemoteException {
-
-            pauseItems.remove(item);
+                pauseItems.remove(item);
                 new Thread(){
                     @Override
                     public void run() {
@@ -72,12 +71,33 @@ public class DownloadService extends Service {
      private void downLoadDatas(DownloadItem item){
 
          try {
-             URL url = new URL(item.url);
+           URL url = new URL(item.url);
+
+
+
            URLConnection urlConnection =  url.openConnection();
-          InputStream inputStream =   urlConnection.getInputStream();
+
+             urlConnection.setConnectTimeout(8000);
+             urlConnection.setReadTimeout(8000);
+
+             long startRange = 0;
+             int fileSize = urlConnection.getContentLength();
+               File file = FileUitls.getFile(item.url, this) ;
+             if(file.exists()){
+                 startRange = file.length();
+             }
+             else {
+                 startRange = 0;
+             }
+            if(startRange == fileSize) {
+                return ;
+            }
+           urlConnection.setRequestProperty("Range", "bytes=" + startRange + "-" + fileSize);
+           InputStream inputStream =   urlConnection.getInputStream();
              byte[]b = new byte[1024];
              int lenth = 0;
-             FileOutputStream fileout = new FileOutputStream(FileUitls.getFile(item.url,this),true);
+             FileOutputStream fileout = new FileOutputStream(file,true);
+             Log.i("download","download begin");
              while ((lenth=inputStream.read(b))!=-1) {
                  item.currentSize +=lenth;
                  fileout.write(b,0,lenth);
@@ -88,7 +108,12 @@ public class DownloadService extends Service {
                  }
              }
              fileout.close();
+             if(file.exists()){
+                if(fileSize == file.length()) {
 
+                }
+             }
+             Log.i("download", "download success");
          } catch (Exception e) {
              e.printStackTrace();
 
