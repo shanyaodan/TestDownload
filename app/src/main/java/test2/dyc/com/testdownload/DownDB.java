@@ -86,7 +86,7 @@ public class DownDB extends SQLiteOpenHelper {
         }
         cursor.moveToFirst();
         DownloadItem downloadItem =  null;
-        if(cursor.getCount()>0) {hai
+        if(cursor.getCount()>0) {
             downloadItem = new DownloadItem();
             downloadItem.name =  cursor.getString(cursor.getColumnIndex("name"));
             downloadItem.url =   cursor.getString(cursor.getColumnIndex("url"));
