@@ -50,6 +50,14 @@ public class DownDB extends SQLiteOpenHelper {
         closeDB();
     }
 
+    public void upDate(String name,String url,String totalSize,int state) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("totalSize",totalSize);
+        getWritableDatabase().update("download_info",contentValues,"url=?",new String[]{url});
+        closeDB();
+    }
+
+
 
     public ArrayList<DownloadItem> getDownloadList() {
         String sql = "select * from download_info";
@@ -78,7 +86,7 @@ public class DownDB extends SQLiteOpenHelper {
         }
         cursor.moveToFirst();
         DownloadItem downloadItem =  null;
-        if(cursor.getCount()>0) {
+        if(cursor.getCount()>0) {hai
             downloadItem = new DownloadItem();
             downloadItem.name =  cursor.getString(cursor.getColumnIndex("name"));
             downloadItem.url =   cursor.getString(cursor.getColumnIndex("url"));
@@ -90,7 +98,7 @@ public class DownDB extends SQLiteOpenHelper {
     }
 
     public void delItem(String url){
-        String sql = "delete * from download_info where url=?";
+        String sql = "delete from download_info where url=?";
         Cursor cursor = getWritableDatabase().rawQuery(sql, new String[]{url});
         closeDB();
     }

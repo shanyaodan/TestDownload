@@ -58,7 +58,7 @@ public class DownLoadManager {
                 mDownLoader = Idownload.Stub.asInterface(service);
 
                 try {
-                    mDownLoader.start(getDownloadItem(url,nameStr));
+                    mDownLoader.start(url,nameStr);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -71,17 +71,10 @@ public class DownLoadManager {
         App.getContext().startService(intent);
     }
 
-    public void pause(String url) {
-        try {
-            mDownLoader.pause(getDownloadItem(url, ""));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void stop(String url) {
         try {
-            mDownLoader.stop(getDownloadItem(url, ""));
+            mDownLoader.stop(url);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -90,8 +83,6 @@ public class DownLoadManager {
     public void resume(String url) {
 
     }
-
-
 
     public void stopAll() {
 
@@ -112,11 +103,10 @@ public class DownLoadManager {
     }
 
     public DownloadItem getDownloadItem(String url,String name){
-        DownloadItem  downloadItem = null ;
+        DownloadItem  downloadItem = DownDB.getInstance(App.getContext()).selectItem(url) ;
         if(null == downloadItem) {
          DownDB.getInstance(App.getContext()).InsetData(name,url,null,-1);
         }
-        downloadItem   =    DownDB.getInstance(App.getContext()).selectItem(url);
         return downloadItem;
     }
 
@@ -128,6 +118,13 @@ public class DownLoadManager {
             App.getContext().sendBroadcast(intent);
     }
 
+    public static void sendDownloadUpdateBroadCast(DownloadItem item) {
+        Intent intent = new Intent(ACTION_DOWNLOAD);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("DownloadItem", item);
+        bundle.putInt("downSign", DOWNLOAD_UPDATE_STATE);
+        App.getContext().sendBroadcast(intent);
+    }
 
 
 

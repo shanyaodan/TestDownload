@@ -110,7 +110,6 @@ public class MyDownload {
             long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             if (getStatusById(completeDownloadId) == DownloadManager.STATUS_SUCCESSFUL) {
-
                 install(context);
             }
         }

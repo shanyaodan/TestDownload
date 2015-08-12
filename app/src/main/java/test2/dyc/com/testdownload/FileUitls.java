@@ -52,11 +52,17 @@ public class FileUitls {
 //    }
 
     public static  String getTempSavePath(Context context) {
-       return context.getExternalFilesDir(null).getAbsolutePath()+"/temp";
+        if(!new File(context.getFilesDir().getAbsolutePath()+"/temp").exists()) {
+            new File(context.getFilesDir().getAbsolutePath()+"/temp").mkdirs();
+        }
+        return context.getFilesDir().getAbsolutePath()+"/temp";
 
     }
     public static  String getCompleteSavePath(Context context) {
-        return context.getExternalFilesDir(null).getAbsolutePath()+"/data";
+        if(!new File(context.getFilesDir().getAbsolutePath()+"/data").exists()) {
+            new File(context.getFilesDir().getAbsolutePath()+"/data").mkdirs();
+        }
+        return context.getFilesDir().getAbsolutePath()+"/data";
 
     }
 
@@ -70,10 +76,14 @@ public class FileUitls {
 
 
     public static File getFile(String url,Context context) {
-
      return    new File(getTempSavePath(context)+"/"+url.hashCode());
 
     }
+
+    public static File getCompleteSaveFile(String name) {
+        return    new File(getTempSavePath(App.getContext())+"/"+name);
+    }
+
 
     public static void delFile(String url,Context context){
         new File(getTempSavePath(context)+"/"+url.hashCode()).delete();

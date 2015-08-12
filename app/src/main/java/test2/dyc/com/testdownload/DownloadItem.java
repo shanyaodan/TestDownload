@@ -17,6 +17,14 @@ public class DownloadItem implements Parcelable{
     public String totalSize;
     public String currentTime;
     public int state;
+    public int downloadPercent;
+
+    public static final int DOWNLOAD_STATE_NOTHINT=-1;
+    public static final int DOWNLOAD_STATE_DOING = 1;
+    public static final int DOWNLOAD_STATE_PAUSE = 2;
+    public static final int DOWNLOAD_STATE_FINISH =3;
+
+
     public DownloadItem(){
 
     }

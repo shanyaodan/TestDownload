@@ -32,6 +32,17 @@
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".DownloadReciver">
+
+            <intent-filter>
+                <action android:name="com.dyc.testdownload"></action>
+
+
+            </intent-filter>
+
+        </receiver>
+
         <service
             android:name=".DownloadService"
             android:enabled="true"
