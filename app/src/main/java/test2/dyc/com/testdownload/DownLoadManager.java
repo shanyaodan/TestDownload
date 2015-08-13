@@ -56,7 +56,6 @@ public class DownLoadManager {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mDownLoader = Idownload.Stub.asInterface(service);
-
                 try {
                     mDownLoader.start(url,nameStr);
                 } catch (RemoteException e) {
@@ -93,6 +92,7 @@ public class DownLoadManager {
         DownloadItem downloadItem =  getDownloadItem(url,"");
 
         FileUitls.getFile(url,App.getContext()).delete();
+        DownDB.getInstance(App.getContext()).delItem(url);
     }
 
 

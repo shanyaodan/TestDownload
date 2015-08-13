@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.view.TextureView;
 
 import java.util.ArrayList;
 
@@ -52,8 +54,19 @@ public class DownDB extends SQLiteOpenHelper {
 
     public void upDate(String name,String url,String totalSize,int state) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("totalSize",totalSize);
-        getWritableDatabase().update("download_info",contentValues,"url=?",new String[]{url});
+        if(!TextUtils.isEmpty(totalSize)) {
+            contentValues.put("totalSize", totalSize);
+        }
+        if(!TextUtils.isEmpty(name)) {
+            contentValues.put("name", name);
+        }
+//        if(!TextUtils.isEmpty(url)) {
+//            contentValues.put("url", url);
+//        }
+        if(!(state == -2)) {
+            contentValues.put("downstate", state);
+        }
+        getWritableDatabase().update("download_info", contentValues, "url=?", new String[]{url});
         closeDB();
     }
 

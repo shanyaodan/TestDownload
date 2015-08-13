@@ -190,13 +190,14 @@ public class DownloadService extends Service {
   private  class MyBinder extends  Idownload.Stub{
         @Override
         public void start(final String url,final String name) throws RemoteException {
-            if(pauseItems.contains(url)) {
-                pauseItems.remove(url);
-            }
+
                 new Thread(){
                     @Override
                     public void run() {
                         super.run();
+                        if(pauseItems.contains(url)) {
+                            pauseItems.remove(url);
+                        }
                         downLoadDatas(url, name);
                     }
                 }.start();
@@ -207,6 +208,7 @@ public class DownloadService extends Service {
       public void stop(String url) throws RemoteException {
           pauseItems.add(url);
       }
+
 
 
 
@@ -232,17 +234,22 @@ public class DownloadService extends Service {
                  startRange = 0;
              }
            urlConnection.setRequestProperty("Range", "bytes=" + startRange + "-");
-             long  fileSize = 0;
+             float  fileSize = 0;
 
              DownloadItem downLoadDatas = DownDB.getInstance(App.getContext()).selectItem(urlStr);
-
              if(startRange == 0) {
                  fileSize = urlConnection.getContentLength();
                  if(null ==downLoadDatas) {
-                     DownDB.getInstance(App.getContext()).InsetData(name, urlStr, fileSize + "", DownloadItem.DOWNLOAD_STATE_NOTHINT);
+                     if(startRange == 0) {
+                         DownDB.getInstance(App.getContext()).InsetData(name, urlStr, fileSize + "", DownloadItem.DOWNLOAD_STATE_NOTINT);
+                     }
                  }
              } else {
-                 fileSize =Long.parseLong(null ==downLoadDatas.totalSize?"0":DownDB.getInstance(App.getContext()).selectItem(urlStr).totalSize);
+                    if(downLoadDatas.state == DownloadItem.DOWNLOAD_STATE_DOING) {
+                        return;
+                    }
+
+                 fileSize =Float.parseFloat(null ==downLoadDatas.totalSize?"0":DownDB.getInstance(App.getContext()).selectItem(urlStr).totalSize);
              }
            InputStream inputStream =   urlConnection.getInputStream();
              byte[]b = new byte[1024];
@@ -264,6 +271,7 @@ public class DownloadService extends Service {
                  shouldNotifySize+=lenth;
                  if(pauseItems.contains(urlStr)) {
                      fileout.close();
+                     DownDB.getInstance(App.getContext()).upDate("",urlStr,"",DownloadItem.DOWNLOAD_STATE_NOTINT);
                      break;
                  }
                  if(shouldNotifySize*100/fileSize>=5) {
@@ -293,15 +301,39 @@ public class DownloadService extends Service {
 
 
                 if(fileSize == file.length()) {
-                    FileUitls.moveFile(urlStr,name,App.getContext());
+                    FileUitls.moveFile(urlStr, name, App.getContext());
                     DownDB.getInstance(App.getContext()).InsetData(name, urlStr, fileSize + "", 1);
-                    DownLoadManager.sendDownloadBroadCast(urlStr,DownLoadManager.DOWNLOAD_FINISH);
+                    DownLoadManager.sendDownloadBroadCast(urlStr, DownLoadManager.DOWNLOAD_FINISH);
+
+                    DownloadItem item = new DownloadItem();
+                    item.url = urlStr;
+                    item.name  = name;
+                    item.currentSize = file.length()+"";
+
+
+                    if((double) file.length() >fileSize) {
+                        FileUitls.delFile(urlStr,App.getContext());
+                        DownDB.getInstance(App.getContext()).delItem(urlStr);
+                        Log.i("TAG","");
+                        downLoadDatas(urlStr, name);
+                        return;
+                    }
+
+                    DownLoadManager.sendDownloadUpdateBroadCast(item);
+                    item.downloadPercent = (int) (((double) file.length() / fileSize) * 100);
+                    Message message = new Message();
+                    message.what = DOWNLOAD_COMPLETE;
+                    message.obj = item;
+
+                    mHandler.sendMessage(message);
+
                 }
              }
+             DownDB.getInstance(App.getContext()).upDate("",urlStr,"",DownloadItem.DOWNLOAD_STATE_DOING);
              Log.i("download", "download success");
          } catch (Exception e) {
              e.printStackTrace();
-
+             DownDB.getInstance(App.getContext()).upDate("", urlStr,  "", DownloadItem.DOWNLOAD_STATE_NOTINT);
              return ;
          }
      }
