@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2015/7/3.
  */
-public class DownloadItem implements Parcelable{
+public class DownloadItem implements Parcelable {
 
     public String url;
     public String name;
@@ -19,13 +19,17 @@ public class DownloadItem implements Parcelable{
     public int state;
     public int downloadPercent;
 
-    public static final int DOWNLOAD_STATE_NOTINT=-1;
+    /**
+     * 数据查询使用，判断下载状况
+     */
+    public static final int DOWNLOAD_STATE_NOTINT = -1;
     public static final int DOWNLOAD_STATE_DOING = 1;
     public static final int DOWNLOAD_STATE_PAUSE = 2;
-    public static final int DOWNLOAD_STATE_FINISH =3;
+    public static final int DOWNLOAD_STATE_FINISH = 3;
+    public static final int DOWNLOAD_STATE_ERROR = 4;
 
 
-    public DownloadItem(){
+    public DownloadItem() {
 
     }
 
@@ -64,5 +68,18 @@ public class DownloadItem implements Parcelable{
         dest.writeString(totalSize);
         dest.writeString(currentTime);
         dest.writeInt(state);
+    }
+
+    @Override
+    public String toString() {
+        return "DownloadItem{" +
+                "url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", currentSize='" + currentSize + '\'' +
+                ", totalSize='" + totalSize + '\'' +
+                ", currentTime='" + currentTime + '\'' +
+                ", state=" + state +
+                ", downloadPercent=" + downloadPercent +
+                '}';
     }
 }

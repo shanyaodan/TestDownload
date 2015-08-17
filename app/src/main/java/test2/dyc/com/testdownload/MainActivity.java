@@ -19,7 +19,7 @@ import java.util.Collection;
 
 
 public class MainActivity extends ActionBarActivity {
-
+String downo ="http://apk.hiapk.com/appdown/com.gamevil.fishing.global?planid=1235201&seid=c6ba2047-94b0-0001-98ed-147010d01500";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +28,13 @@ public class MainActivity extends ActionBarActivity {
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downLoadManager.start("http://filelx.liqucn.com/upload/2014/xitong/liqu_market4.0_P1005.ptada","test");
+                downLoadManager.start(downo,"test");
             }
         });
         findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downLoadManager.stop("http://filelx.liqucn.com/upload/2014/xitong/liqu_market4.0_P1005.ptada");
+                downLoadManager.stop(downo);
             }
         });
 
@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
         findViewById(R.id.stop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downLoadManager.removeData("http://filelx.liqucn.com/upload/2014/xitong/liqu_market4.0_P1005.ptada");
+                downLoadManager.removeData(downo);
 //              downLoadManager.start("http://count.liqucn.com/d.php?id=441834&ArticleOS=android&content_url=http://www.liqucn.com/rj/441834.shtml&down_url=kpa.1_gnipousiriem/iacil/4102/daolpu/moc.ncuqil.elif//:ptth&is_cp=1&market_place_id=11","test");
             }
         });

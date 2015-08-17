@@ -60,12 +60,7 @@ public class DownDB extends SQLiteOpenHelper {
         if(!TextUtils.isEmpty(name)) {
             contentValues.put("name", name);
         }
-//        if(!TextUtils.isEmpty(url)) {
-//            contentValues.put("url", url);
-//        }
-        if(!(state == -2)) {
-            contentValues.put("downstate", state);
-        }
+         contentValues.put("downstate", state);
         getWritableDatabase().update("download_info", contentValues, "url=?", new String[]{url});
         closeDB();
     }
